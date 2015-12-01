@@ -399,6 +399,8 @@
         this.container.find('.calendar')
             .on('click.daterangepicker', '.prev', $.proxy(this.clickPrev, this))
             .on('click.daterangepicker', '.next', $.proxy(this.clickNext, this))
+            .on('click.daterangepicker', '.prevYear', $.proxy(this.clickPrevYear, this))
+            .on('click.daterangepicker', '.nextYear', $.proxy(this.clickNextYear, this))
             .on('click.daterangepicker', 'td.available', $.proxy(this.clickDate, this))
             .on('mouseenter.daterangepicker', 'td.available', $.proxy(this.hoverDate, this))
             .on('mouseleave.daterangepicker', 'td.available', $.proxy(this.updateFormInputs, this))
@@ -726,9 +728,11 @@
             if (this.showWeekNumbers)
                 html += '<th></th>';
 
-                html += '<th class="prev available"><i class="fa fa-chevron-left glyphicon glyphicon-chevron-left"><</i></th>';
+                html += '<th><i class="prev available fa fa-chevron-left glyphicon glyphicon-chevron-left"> < </i>';
 
-            var dateHtml = this.locale.monthNames[calendar[1][1].month()] + calendar[1][1].format(" YYYY");
+            var dateHtml = this.locale.monthNames[calendar[1][1].month()] + calendar[1][1].format(" YYYY"),
+                monthHtml = this.locale.monthNames[calendar[1][1].month()],
+                yearHtml = calendar[1][1].format(" YYYY");
 
             if (this.showDropdowns) {
                 var currentMonth = calendar[1][1].month();
@@ -763,10 +767,21 @@
                 dateHtml = monthHtml + yearHtml;
             }
 
-            html += '<th colspan="5" class="month">' + dateHtml + '</th>';
-                html += '<th class="next available"><i class="fa fa-chevron-right glyphicon glyphicon-chevron-right">></i></th>';
+            html += monthHtml;
+            html += '<i class="next available fa fa-chevron-right glyphicon glyphicon-chevron-right"> > </i>';
+
+            html += ' | ';
+
+            html += '<i class="prevYear available fa fa-chevron-left glyphicon glyphicon-chevron-left"> < </i>';
+            html += yearHtml;
+            html += '<i class="nextYear available fa fa-chevron-right glyphicon glyphicon-chevron-right"> > </i></th>';
 
             html += '</tr>';
+            html += '</thead>';
+            html += '</table>';
+            html += '<table class="table-condensed">';
+            html += '<thead>';
+
             html += '<tr>';
 
             // add week number label
@@ -1205,6 +1220,26 @@
                 this.leftCalendar.month.add(1, 'month');
             } else {
                 this.rightCalendar.month.add(1, 'month');
+            }
+            this.updateCalendars();
+        },
+
+        clickPrevYear: function(e) {
+            var cal = $(e.target).parents('.calendar');
+            if (cal.hasClass('left')) {
+                this.leftCalendar.month.subtract(1, 'year');
+            } else {
+                this.rightCalendar.month.subtract(1, 'year');
+            }
+            this.updateCalendars();
+        },
+
+        clickNextYear: function(e) {
+            var cal = $(e.target).parents('.calendar');
+            if (cal.hasClass('left')) {
+                this.leftCalendar.month.add(1, 'year');
+            } else {
+                this.rightCalendar.month.add(1, 'year');
             }
             this.updateCalendars();
         },
