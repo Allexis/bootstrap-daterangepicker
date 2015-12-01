@@ -77,7 +77,7 @@
             customRangeLabel: 'Custom Range',
             daysOfWeek: moment.weekdaysMin(),
             monthNames: moment.monthsShort(),
-            firstDay: moment.localeData().firstDayOfWeek()
+            firstDay: 0 // TODO: moment.localeData().firstDayOfWeek()
         };
 
         this.callback = function() { };
@@ -98,34 +98,38 @@
         //html template for the picker UI
         if (typeof options.template !== 'string')
             options.template = '<div class="daterangepicker dropdown-menu">' +
+                // input left
+                '<div class="daterangepicker_input">' +
+                  '<input class="input-mini" type="text" name="daterangepicker_start" value="" />' +
+                  '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
+                  '<div class="calendar-time">' +
+                    '<div></div>' +
+                    '<i class="fa fa-clock-o glyphicon glyphicon-time"></i>' +
+                  '</div>' +
+                '</div>' +
+                // input right
+                '<div class="daterangepicker_input">' +
+                  '<input class="input-mini" type="text" name="daterangepicker_end" value="" />' +
+                  '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
+                  '<div class="calendar-time">' +
+                    '<div></div>' +
+                    '<i class="fa fa-clock-o glyphicon glyphicon-time"></i>' +
+                  '</div>' +
+                '</div>' +
+                '<div style="clear:both;"></div>' +
+                // calendar left
                 '<div class="calendar left">' +
-                    '<div class="daterangepicker_input">' +
-                      '<input class="input-mini" type="text" name="daterangepicker_start" value="" />' +
-                      '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
-                      '<div class="calendar-time">' +
-                        '<div></div>' +
-                        '<i class="fa fa-clock-o glyphicon glyphicon-time"></i>' +
-                      '</div>' +
-                    '</div>' +
                     '<div class="calendar-table"></div>' +
                 '</div>' +
+                // calendar right
                 '<div class="calendar right">' +
-                    '<div class="daterangepicker_input">' +
-                      '<input class="input-mini" type="text" name="daterangepicker_end" value="" />' +
-                      '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
-                      '<div class="calendar-time">' +
-                        '<div></div>' +
-                        '<i class="fa fa-clock-o glyphicon glyphicon-time"></i>' +
-                      '</div>' +
-                    '</div>' +
                     '<div class="calendar-table"></div>' +
                 '</div>' +
                 '<div class="ranges">' +
                     '<div class="range_inputs">' +
-                        '<button class="applyBtn" disabled="disabled" type="button"></button> ' +
-                        '<button class="cancelBtn" type="button"></button>' +
                     '</div>' +
                 '</div>' +
+                        '<button class="applyBtn" disabled="disabled" type="button" style="width:100%;"></button> ' +
             '</div>';
 
         this.parentEl = (options.parentEl && $(options.parentEl).length) ? $(options.parentEl) : $(this.parentEl);
@@ -412,6 +416,18 @@
             .on('mouseenter.daterangepicker', 'li', $.proxy(this.hoverRange, this))
             .on('mouseleave.daterangepicker', 'li', $.proxy(this.updateFormInputs, this));
 
+        var that = this;
+
+        this.container.find('input[name=daterangepicker_start]')
+            .on('click', function() {
+                that.showCalendar('left');
+            });
+
+        this.container.find('input[name=daterangepicker_end]')
+            .on('click', function() {
+                that.showCalendar('right');
+            });
+
         if (this.element.is('input')) {
             this.element.on({
                 'click.daterangepicker': $.proxy(this.show, this),
@@ -440,6 +456,21 @@
     DateRangePicker.prototype = {
 
         constructor: DateRangePicker,
+        initial: true,
+
+        showCalendar: function(side) {
+            if (side === 'left') {
+                this.container.find('input[name="daterangepicker_start"]').addClass('active');
+                this.container.find('input[name="daterangepicker_end"]').removeClass('active');
+                this.container.find('.left').show();
+                this.container.find('.right').hide();
+            } else {
+                this.container.find('input[name="daterangepicker_start"]').removeClass('active');
+                this.container.find('input[name="daterangepicker_end"]').addClass('active');
+                this.container.find('.left').hide();
+                this.container.find('.right').show();   
+            }
+        },
 
         setStartDate: function(startDate) {
             if (typeof startDate === 'string')
@@ -462,6 +493,10 @@
 
             if (!this.isShowing)
                 this.updateElement();
+
+            if(this.initial){
+                this.showCalendar('right');    
+            }
 
             this.updateMonthsInView();
         },
@@ -491,6 +526,10 @@
             if (!this.isShowing)
                 this.updateElement();
 
+            if(this.initial){
+                this.showCalendar('left');   
+            }
+            
             this.updateMonthsInView();
         },
 
@@ -499,6 +538,7 @@
         },
 
         updateView: function() {
+
             if (this.timePicker) {
                 this.renderTimePicker('left');
                 this.renderTimePicker('right');
@@ -508,13 +548,7 @@
                     this.container.find('.right .calendar-time select').removeAttr('disabled').removeClass('disabled');
                 }
             }
-            if (this.endDate) {
-                this.container.find('input[name="daterangepicker_end"]').removeClass('active');
-                this.container.find('input[name="daterangepicker_start"]').addClass('active');
-            } else {
-                this.container.find('input[name="daterangepicker_end"]').addClass('active');
-                this.container.find('input[name="daterangepicker_start"]').removeClass('active');
-            }
+
             this.updateMonthsInView();
             this.updateCalendars();
             this.updateFormInputs();
@@ -567,7 +601,7 @@
                     minute = parseInt(this.container.find('.right .minuteselect').val(), 10);
                     second = this.timePickerSeconds ? parseInt(this.container.find('.right .secondselect').val(), 10) : 0;
                     if (!this.timePicker24Hour) {
-                        var ampm = this.container.find('.right .ampmselect').val();
+                        var ampm = this.container.find('.left .ampmselect').val();
                         if (ampm === 'PM' && hour < 12)
                             hour += 12;
                         if (ampm === 'AM' && hour === 12)
@@ -692,11 +726,7 @@
             if (this.showWeekNumbers)
                 html += '<th></th>';
 
-            if ((!minDate || minDate.isBefore(calendar.firstDay)) && (!this.linkedCalendars || side == 'left')) {
-                html += '<th class="prev available"><i class="fa fa-chevron-left glyphicon glyphicon-chevron-left"></i></th>';
-            } else {
-                html += '<th></th>';
-            }
+                html += '<th class="prev available"><i class="fa fa-chevron-left glyphicon glyphicon-chevron-left"><</i></th>';
 
             var dateHtml = this.locale.monthNames[calendar[1][1].month()] + calendar[1][1].format(" YYYY");
 
@@ -734,11 +764,7 @@
             }
 
             html += '<th colspan="5" class="month">' + dateHtml + '</th>';
-            if ((!maxDate || maxDate.isAfter(calendar.lastDay)) && (!this.linkedCalendars || side == 'right' || this.singleDatePicker)) {
-                html += '<th class="next available"><i class="fa fa-chevron-right glyphicon glyphicon-chevron-right"></i></th>';
-            } else {
-                html += '<th></th>';
-            }
+                html += '<th class="next available"><i class="fa fa-chevron-right glyphicon glyphicon-chevron-right">></i></th>';
 
             html += '</tr>';
             html += '<tr>';
@@ -1167,8 +1193,6 @@
             var cal = $(e.target).parents('.calendar');
             if (cal.hasClass('left')) {
                 this.leftCalendar.month.subtract(1, 'month');
-                if (this.linkedCalendars)
-                    this.rightCalendar.month.subtract(1, 'month');
             } else {
                 this.rightCalendar.month.subtract(1, 'month');
             }
@@ -1181,8 +1205,6 @@
                 this.leftCalendar.month.add(1, 'month');
             } else {
                 this.rightCalendar.month.add(1, 'month');
-                if (this.linkedCalendars)
-                    this.leftCalendar.month.add(1, 'month');
             }
             this.updateCalendars();
         },
@@ -1254,7 +1276,8 @@
             // * if single date picker mode, and time picker isn't enabled, apply the selection immediately
             //
 
-            if (this.endDate || date.isBefore(this.startDate)) {
+            // left calendar for startdate, right calendar for enddate
+            if($(e.target).parents('.calendar').hasClass('left')) {
                 if (this.timePicker) {
                     var hour = parseInt(this.container.find('.left .hourselect').val(), 10);
                     if (!this.timePicker24Hour) {
@@ -1268,8 +1291,12 @@
                     var second = this.timePickerSeconds ? parseInt(this.container.find('.left .secondselect').val(), 10) : 0;
                     date = date.clone().hour(hour).minute(minute).second(second);
                 }
-                this.endDate = null;
                 this.setStartDate(date.clone());
+
+                if(this.startDate > this.endDate){
+                    this.endDate = null;
+                }
+
             } else {
                 if (this.timePicker) {
                     var hour = parseInt(this.container.find('.right .hourselect').val(), 10);
@@ -1296,6 +1323,7 @@
             }
 
             this.updateView();
+            this.initial = false;
 
         },
 

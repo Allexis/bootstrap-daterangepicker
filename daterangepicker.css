@@ -123,12 +123,12 @@
 
 .daterangepicker .calendar {
   display: none;
-  max-width: 270px;
   margin: 4px;
 }
 
 .daterangepicker.show-calendar .calendar {
   display: block;
+  width:100%;
 }
 
 .daterangepicker .calendar.single .calendar-table {
@@ -243,9 +243,6 @@
   height: 30px;
   line-height: 30px;
   vertical-align: middle;
-  margin: 0 0 5px 0;
-  padding: 0 6px 0 28px;
-  width: 100%;
 }
 
 .daterangepicker .input-mini.active {
@@ -322,21 +319,9 @@
   .daterangepicker.single .ranges ul {
     width: 100%;
   }
-  .daterangepicker .calendar.left .calendar-table {
-    border-right: none;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  .daterangepicker .calendar.right .calendar-table {
-    border-left: none;
-    border-top-left-radius: 0;
-    border-bottom-left-radius: 0;
-  }
 
   .daterangepicker .calendar.left {
     clear: left;
-    margin-right: 0;
   }
   .daterangepicker.single .calendar.left {
     clear: none;
@@ -346,16 +331,9 @@
     float:left;
   }
 
-  .daterangepicker .calendar.right {
-    margin-left: 0;
-  }
-
-  .daterangepicker .left .daterangepicker_input {
-    padding-right: 12px;
-  }
-
-  .daterangepicker .calendar.left .calendar-table {
-    padding-right: 12px;
+  .daterangepicker_input {
+    width:50%;
+    float:left;
   }
 
   .daterangepicker .ranges,
