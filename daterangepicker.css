@@ -124,6 +124,7 @@
 .daterangepicker .calendar {
   display: none;
   margin: 4px;
+  width:100%;
 }
 
 .daterangepicker.show-calendar .calendar {
@@ -137,6 +138,10 @@
 
 /* Calendars */
 
+.picker {
+  float:left;
+}
+
 .daterangepicker .calendar th, .daterangepicker .calendar td {
   white-space: nowrap;
   text-align: center;
@@ -144,9 +149,7 @@
 }
 
 .daterangepicker .calendar-table {
-  border: 1px solid #ddd;
   padding: 4px;
-  border-radius: 4px;
   background: #fff;
 }
 
@@ -305,6 +308,10 @@
   background: #08c;
   border: 1px solid #08c;
   color: #fff;
+}
+
+.applyBtn {
+  display:block;
 }
 
 /*  Larger Screen Styling */
