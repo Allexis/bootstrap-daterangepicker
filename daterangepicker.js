@@ -455,12 +455,20 @@
         initial: true,
 
         showCalendar: function(side) {
+
+            // overwrite side to 'disable' start/enddate for specific ranges
+            if(this.chosenLabel === 'specific_date' || this.chosenLabel === 'after_date'){
+                side = 'left';
+            } else if(this.chosenLabel === 'before_date') {
+                side = 'right';
+            }
+
             if (side === 'left') {
                 this.container.find('input[name="daterangepicker_start"]').addClass('active');
                 this.container.find('input[name="daterangepicker_end"]').removeClass('active');
                 this.container.find('.left').show();
                 this.container.find('.right').hide();
-            } else {
+            } else if(side === 'right') {
                 this.container.find('input[name="daterangepicker_start"]').removeClass('active');
                 this.container.find('input[name="daterangepicker_end"]').addClass('active');
                 this.container.find('.left').hide();
@@ -469,6 +477,7 @@
         },
 
         setStartDate: function(startDate) {
+
             if (typeof startDate === 'string')
                 this.startDate = moment(startDate, this.locale.format);
 
@@ -492,6 +501,12 @@
 
             if(this.initial){
                 this.showCalendar('right');    
+            }
+
+            if(this.chosenLabel === 'specific_date'){
+                this.endDate = this.startDate.clone();
+            } else if(this.chosenLabel === 'after_date') {
+                this.endDate = null;
             }
 
             this.updateMonthsInView();
@@ -525,6 +540,10 @@
             if(this.initial){
                 this.showCalendar('left');   
             }
+
+            if(this.chosenLabel === 'before_date'){
+                this.statDate = null;
+            } 
             
             this.updateMonthsInView();
         },
@@ -551,10 +570,10 @@
         },
 
         updateMonthsInView: function() {
-            if (this.endDate) {
+            if (this.startDate && this.endDate) {
 
                 //if both dates are visible already, do nothing
-                if (!this.singleDatePicker && this.leftCalendar.month && this.rightCalendar.month &&
+                if (!this.singleDatePicker && this.leftCalendar.month && this.rightCalendar.month && 
                     (this.startDate.format('YYYY-MM') == this.leftCalendar.month.format('YYYY-MM') || this.startDate.format('YYYY-MM') == this.rightCalendar.month.format('YYYY-MM'))
                     &&
                     (this.endDate.format('YYYY-MM') == this.leftCalendar.month.format('YYYY-MM') || this.endDate.format('YYYY-MM') == this.rightCalendar.month.format('YYYY-MM'))
@@ -566,11 +585,11 @@
                 if (!this.linkedCalendars && (this.endDate.month() != this.startDate.month() || this.endDate.year() != this.startDate.year())) {
                     this.rightCalendar.month = this.endDate.clone().date(2);
                 } else {
-                    this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month');
+                    this.rightCalendar.month = this.startDate.clone().date(2);
                 }
                 
             } else {
-                if (this.leftCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM') && this.rightCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM')) {
+                if (this.startDate && this.leftCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM') && this.rightCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM')) {
                     this.leftCalendar.month = this.startDate.clone().date(2);
                     this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month');
                 }
@@ -613,30 +632,43 @@
 
             //highlight any predefined range matching the current start and end dates
             this.container.find('.ranges li').removeClass('active');
-            if (this.endDate == null) return;
 
             var customRange = true;
             var i = 0;
-            for (var range in this.ranges) {
-                if (this.timePicker) {
-                    if (this.startDate.isSame(this.ranges[range][0]) && this.endDate.isSame(this.ranges[range][1])) {
-                        customRange = false;
-                        this.chosenLabel = this.container.find('.ranges li:eq(' + i + ')').addClass('active').html();
-                        break;
+
+            if(this.chosenLabel === 'specific_date' || this.chosenLabel === 'after_date'){
+                this.container.find('.ranges *[data-range="' + this.chosenLabel + '"]').addClass('active');
+                this.showCalendar('left');
+            } else if(this.chosenLabel === 'before_date'){
+                this.container.find('.ranges *[data-range="' + this.chosenLabel + '"]').addClass('active');
+                this.showCalendar('right');
+            } 
+
+            else {
+
+                for (var range in this.ranges) {
+                    if (this.timePicker) {
+                        if (this.ranges[range][0] && this.ranges[range][1] && this.startDate.isSame(this.ranges[range][0]) && this.endDate.isSame(this.ranges[range][1])) {
+                            customRange = false;
+                            this.chosenLabel = this.container.find('.ranges li:eq(' + i + ')').addClass('active').html();
+                            break;
+                        }
+                    } else {
+                        //ignore times when comparing dates if time picker is not enabled
+                        if (this.ranges[range][0] && this.ranges[range][1] && this.startDate.format('YYYY-MM-DD') == this.ranges[range][0].format('YYYY-MM-DD') && this.endDate.format('YYYY-MM-DD') == this.ranges[range][1].format('YYYY-MM-DD')) {
+                            customRange = false;
+                            this.chosenLabel = this.container.find('.ranges li:eq(' + i + ')').addClass('active').html();
+                            break;
+                        }
                     }
-                } else {
-                    //ignore times when comparing dates if time picker is not enabled
-                    if (this.startDate.format('YYYY-MM-DD') == this.ranges[range][0].format('YYYY-MM-DD') && this.endDate.format('YYYY-MM-DD') == this.ranges[range][1].format('YYYY-MM-DD')) {
-                        customRange = false;
-                        this.chosenLabel = this.container.find('.ranges li:eq(' + i + ')').addClass('active').html();
-                        break;
-                    }
+                    i++;
                 }
-                i++;
-            }
-            if (customRange) {
-                this.chosenLabel = this.container.find('.ranges li:last').addClass('active').html();
-                this.showCalendars();
+
+                if (customRange) {
+                    this.chosenLabel = this.container.find('.ranges li:last').addClass('active').html();
+                    this.showCalendars();
+                }
+
             }
 
         },
@@ -835,15 +867,16 @@
                         classes.push('off', 'disabled');
 
                     //highlight the currently selected start date
-                    if (this.startDate && calendar[row][col].format('YYYY-MM-DD') == this.startDate.format('YYYY-MM-DD'))
+                    if (this.startDate && calendar[row][col].format('YYYY-MM-DD') == this.startDate.format('YYYY-MM-DD')){
                         classes.push('active', 'start-date');
+                    }
 
                     //highlight the currently selected end date
                     if (this.endDate != null && calendar[row][col].format('YYYY-MM-DD') == this.endDate.format('YYYY-MM-DD'))
                         classes.push('active', 'end-date');
 
                     //highlight dates in-between the selected dates
-                    if (this.endDate != null && calendar[row][col] > this.startDate && calendar[row][col] < this.endDate)
+                    if (((this.endDate != null && calendar[row][col] < this.endDate) || !this.endDate) && calendar[row][col] > this.startDate)
                         classes.push('in-range');
 
                     var cname = '', disabled = false;
@@ -1191,20 +1224,29 @@
         clickRange: function(e) {
             var label = e.target.dataset.range || e.target.innerHTML;
             this.chosenLabel = label;
+
             if (label == this.locale.customRangeLabel) {
                 this.showCalendars();
+                this.showCalendar('left');
+                this.initial = true;
                 this.container.find('.ranges li').removeClass('active');
                 this.container.find('.ranges li:last-child').addClass('active');
             } else {
                 var dates = this.ranges[label];
-                this.startDate = dates[0];
-                this.endDate = dates[1];
+                this.startDate = dates[0] ? dates[0].clone() : null;
+                this.endDate = dates[1] ? dates[1].clone() : null;
 
                 if(dates[0] && dates[0]._isValid){
-                    this.leftCalendar.month = dates[0];                    
+                    this.leftCalendar.month = dates[0].clone(); 
+                    this.showCalendar('left');                   
+                } else {
+                    this.showCalendar('right');
                 }
+
                 if(dates[1] && dates[1]._isValid){
-                    this.rightCalendar.month = dates[1];
+                    this.rightCalendar.month = dates[1].clone();
+                } else {
+                    this.showCalendar('left');
                 }
 
                 if (!this.timePicker) {
@@ -1262,6 +1304,10 @@
 
         hoverDate: function(e) {
 
+            if(this.chosenLabel === 'after_date' || this.chosenLabel === 'before_date' || this.chosenLabel === 'specific_date'){
+                return false;
+            }
+
             //ignore mouse movements while an above-calendar text input has focus
             if (this.container.find('input[name=daterangepicker_start]').is(":focus") || this.container.find('input[name=daterangepicker_end]').is(":focus"))
                 return;
@@ -1276,11 +1322,13 @@
             var cal = $(e.target).parents('.calendar');
             var date = cal.hasClass('left') ? this.leftCalendar.calendar[row][col] : this.rightCalendar.calendar[row][col];
 
+            /*
             if (this.endDate) {
                 this.container.find('input[name=daterangepicker_start]').val(date.format(this.locale.format));
             } else {
                 this.container.find('input[name=daterangepicker_end]').val(date.format(this.locale.format));
             }
+            */
 
             //highlight the dates between the start date and the date being hovered as a potential end date
             var leftCalendar = this.leftCalendar;
