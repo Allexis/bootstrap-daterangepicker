@@ -10,7 +10,7 @@
 
 .daterangepicker {
   position: absolute;
-  background: #fff;
+  background: #fcfcfc;
   top: 100px;
   left: 20px;
   padding: 4px;
@@ -125,6 +125,7 @@
   display: none;
   margin: 4px;
   width:100%;
+  border:1px solid #f5f5f5;
 }
 
 .daterangepicker.show-calendar .calendar {
@@ -136,9 +137,15 @@
   border: none;
 }
 
+.month-year-switch {
+  color: #8c8c8c;
+  font-weight:normal !important;
+}
+
 /* Calendars */
 
 .picker {
+  margin:4px;
   float:left;
 }
 
@@ -146,11 +153,11 @@
   white-space: nowrap;
   text-align: center;
   min-width: 32px;
+  color:#323232;
 }
 
 .daterangepicker .calendar-table {
   padding: 4px;
-  background: #fff;
 }
 
 .daterangepicker table {
@@ -169,6 +176,9 @@
 
 .daterangepicker td.off, .daterangepicker td.off.in-range, .daterangepicker td.off.start-date, .daterangepicker td.off.end-date {
   color: #999;
+  height:0px;
+  margin:0px;
+  padding:0px;
   background: #fff;
 }
 
@@ -183,7 +193,7 @@
 }
 
 .daterangepicker td.in-range {
-  background: #ebf4f8;
+  background: #e1f5fa;
   border-radius: 0;
 }
 
@@ -200,9 +210,10 @@
 }
 
 .daterangepicker td.active, .daterangepicker td.active:hover {
-  background-color: #357ebd;
+  background-color: #e1f5fa;
   border-color: #3071a9;
-  color: #fff;
+  color: #323232;
+  font-weight:bold;
 }
 
 .daterangepicker td.week, .daterangepicker th.week {
@@ -238,6 +249,28 @@
 
 /* Text Input Above Each Calendar */
 
+.daterangepicker_input_container {
+  width:80%;
+  padding:5px;
+  margin: auto;
+  text-align:center;
+  background:#ffffff;
+  color:#323232;
+  box-shadow:0px 0px 3px #20bae4;
+  font-size:13px;
+  cursor:pointer;
+  border-radius: 1.34px;
+}
+
+.daterangepicker_input_container.active {
+  background:#20bae4;
+  color:#ffffff;
+}
+
+.daterangepicker_input_container span {
+  display:block;
+}
+
 .daterangepicker .input-mini {
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -248,8 +281,14 @@
   vertical-align: middle;
 }
 
+.next, .nextYear, .prev, .prevYear {
+  color: #20bae4;
+  margin:0px 5px !important;
+  font-size:11px;
+}
+
 .daterangepicker .input-mini.active {
-  border: 1px solid #357ebd;
+  border: 1px solid #20bae4;
 }
 
 .daterangepicker .daterangepicker_input i {
@@ -284,34 +323,64 @@
   float: none;
   margin: 4px;
   text-align: left;
+  margin-top:60px;
 }
 
-.daterangepicker .ranges ul {
+.daterangepicker .ranges ul, .daterangepicker .times ul {
   list-style: none;
   margin: 0 auto;
   padding: 0;
   width: 100%;
 }
 
-.daterangepicker .ranges li {
-  font-size: 13px;
-  background: #f5f5f5;
-  border: 1px solid #f5f5f5;
-  color: #08c;
+.daterangepicker .ranges li, .daterangepicker .times li {
+  font-size: 11px;
+  background: #ededed;
+  color: #323232;
   padding: 3px 12px;
-  margin-bottom: 8px;
-  border-radius: 5px;
+  margin-bottom: 9px;
+  border-radius: 1.34px;
   cursor: pointer;
+  box-shadow:0px 1px 2px 0px rgba(0,0,0,0.25);
 }
 
-.daterangepicker .ranges li.active, .daterangepicker .ranges li:hover {
-  background: #08c;
-  border: 1px solid #08c;
+.daterangepicker .ranges li.active, .daterangepicker .ranges li:hover, .daterangepicker .times li.active, .daterangepicker .times li:hover {
+  background: #20bae4;
   color: #fff;
 }
 
-.applyBtn {
+.picktime {
+  clear:both;
+  margin:4px;
+  font-size:11px;
+  color:#323232;
+}
+
+.time-picker {
+  width:100%;
+}
+
+.time-picker.times {
+  margin: 4px;
+}
+
+.time-picker .time {
+  float:left;
+  padding:16px 12px;
+}
+
+.applyBtn, .applyBtn:hover {
   display:block;
+  width:100%;
+  background:none;
+  border:none !important;
+  margin-top:30px;
+  padding-top:10px;
+  border-top:1px solid #20bae4 !important;
+  border-radius:1.34px;
+  color:#20bae4;
+  font-weight:bold;
+  box-shadow: none;
 }
 
 /*  Larger Screen Styling */
@@ -320,7 +389,8 @@
     width: auto;
   }
 
-  .daterangepicker .ranges ul {
+  .daterangepicker .ranges ul,
+  .daterangepicker .times ul {
     width: 160px;
   }
   .daterangepicker.single .ranges ul {
@@ -344,13 +414,15 @@
   }
 
   .daterangepicker .ranges,
+  .daterangepicker .times ul,
   .daterangepicker .calendar {
     float: left;
   }
 }
 
 @media (min-width: 730px) {
-  .daterangepicker .ranges {
+  .daterangepicker .ranges,
+  .daterangepicker .times {
     width: auto;
     float: left;
   }

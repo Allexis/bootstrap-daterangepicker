@@ -65,7 +65,7 @@
             this.drops = 'up';
 
         this.buttonClasses = 'btn btn-sm';
-        this.applyClass = 'btn-success';
+        this.applyClass = '';
         this.cancelClass = 'btn-default';
 
         this.locale = {
@@ -77,7 +77,10 @@
             customRangeLabel: 'Custom Range',
             daysOfWeek: moment.weekdaysMin(),
             monthNames: moment.monthsShort(),
-            firstDay: 0 // TODO: moment.localeData().firstDayOfWeek()
+            firstDay: 0, // TODO: moment.localeData().firstDayOfWeek()
+            startDate: 'Start date',
+            endDate: 'End date',
+            pickTime: 'Pick time:'
         };
 
         this.callback = function() { };
@@ -105,8 +108,10 @@
                 // input left
                 '<div class="picker">' +
                     '<div class="daterangepicker_input">' +
-                      '<span class="daterangepicker_start"></span>' +
-                      '<input class="input-mini" type="text" name="daterangepicker_start" value="" />' +
+                      '<div class="daterangepicker_input_container">' +
+                        '<span>' + this.locale.startDate + '</span>' +
+                        '<span class="daterangepicker_start"></span>' +
+                      '</div>' +
                       '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
                       '<div class="calendar-time">' +
                         '<div></div>' +
@@ -115,8 +120,10 @@
                     '</div>' +
                     // input right
                     '<div class="daterangepicker_input">' +
-                      '<span class="daterangepicker_end"></span>' +
-                      '<input class="input-mini" type="text" name="daterangepicker_end" value="" />' +
+                      '<div class="daterangepicker_input_container">' +
+                        '<span>' + this.locale.endDate + '</span>' +
+                        '<span class="daterangepicker_end"></span>' +
+                      '</div>' +
                       '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
                       '<div class="calendar-time">' +
                         '<div></div>' +
@@ -134,7 +141,12 @@
                     '</div>' +
                 '</div>' +
                 // time picker
-                '<div class="time-picker">' +
+                '<p class="picktime">' + this.locale.pickTime + '</p>' +
+                '<div class="time-picker times">' +
+                    '<ul>' +
+                        '<li class="start-date">Start date</li>' +
+                        '<li class="end-date">End date</li>' +
+                    '</ul>' +
                     '<div class="time left"></div>' +
                     '<div class="time right"></div>' + 
                 '</div>' +
@@ -179,6 +191,12 @@
 
             if (typeof options.locale.invalidLabel === 'string')
               this.locale.invalidLabel = options.locale.invalidLabel;
+
+            if (typeof options.locale.startDate === 'string')
+              this.locale.startDate = options.locale.startDate;
+
+            if (typeof options.locale.endDate === 'string')
+              this.locale.endDate = options.locale.endDate;
 
         }
 
@@ -425,14 +443,20 @@
             .on('mouseenter.daterangepicker', 'li', $.proxy(this.hoverRange, this))
             .on('mouseleave.daterangepicker', 'li', $.proxy(this.updateFormInputs, this));
 
+        this.container.find('.time-picker li.start-date')
+            .on('click', $.proxy(this.showCalendar, this, 'left'));
+
+        this.container.find('.time-picker li.end-date')
+            .on('click', $.proxy(this.showCalendar, this, 'right'));
+
         var that = this;
 
-        this.container.find('input[name=daterangepicker_start]')
+        this.container.find('span.daterangepicker_start').parent()
             .on('click', function() {
                 that.showCalendar('left');
             });
 
-        this.container.find('input[name=daterangepicker_end]')
+        this.container.find('span.daterangepicker_end').parent()
             .on('click', function() {
                 that.showCalendar('right');
             });
@@ -477,13 +501,17 @@
             }
 
             if (side === 'left') {
-                this.container.find('input[name="daterangepicker_start"]').addClass('active');
-                this.container.find('input[name="daterangepicker_end"]').removeClass('active');
+                this.container.find('span.daterangepicker_start').parent().addClass('active');
+                this.container.find('.time-picker li.start-date').addClass('active');
+                this.container.find('span.daterangepicker_end').parent().removeClass('active');
+                this.container.find('.time-picker li.end-date').removeClass('active');
                 this.container.find('.left').show();
                 this.container.find('.right').hide();
             } else if(side === 'right') {
-                this.container.find('input[name="daterangepicker_start"]').removeClass('active');
-                this.container.find('input[name="daterangepicker_end"]').addClass('active');
+                this.container.find('span.daterangepicker_start').parent().removeClass('active');
+                this.container.find('.time-picker li.start-date').removeClass('active');
+                this.container.find('span.daterangepicker_end').parent().addClass('active');
+                this.container.find('.time-picker li.end-date').addClass('active');
                 this.container.find('.left').hide();
                 this.container.find('.right').show();   
             }
@@ -762,15 +790,15 @@
             var maxDate = this.maxDate;
             var selected = side == 'left' ? this.startDate : this.endDate;
 
-            var html = '<table class="table-condensed">';
+            var html = '<table class="table-condensed month-year-switch">';
             html += '<thead>';
             html += '<tr>';
 
             // add empty cell for week number
             if (this.showWeekNumbers)
-                html += '<th></th>';
+                html += '<td></td>';
 
-                html += '<th><i class="prev available fa fa-chevron-left glyphicon glyphicon-chevron-left"> < </i>';
+                html += '<td><i class="prev available icon icon-arrow-triangle-left"></i>';
 
             var dateHtml = this.locale.monthNames[calendar[1][1].month()] + calendar[1][1].format(" YYYY"),
                 monthHtml = this.locale.monthNames[calendar[1][1].month()],
@@ -810,13 +838,14 @@
             }
 
             html += monthHtml;
-            html += '<i class="next available fa fa-chevron-right glyphicon glyphicon-chevron-right"> > </i>';
+            html += '<i class="next available icon icon-arrow-triangle-right"></i>';
 
-            html += ' | ';
+            html += '</td><td>';
 
-            html += '<i class="prevYear available fa fa-chevron-left glyphicon glyphicon-chevron-left"> < </i>';
+            html += '<i class="prevYear available icon icon-arrow-triangle-left"></i>';
             html += yearHtml;
-            html += '<i class="nextYear available fa fa-chevron-right glyphicon glyphicon-chevron-right"> > </i></th>';
+            html += '<i class="nextYear available icon icon-arrow-triangle-right"></i>';
+            html += '</td>';
 
             html += '</tr>';
             html += '</thead>';
@@ -904,8 +933,11 @@
                     if (!disabled)
                         cname += 'available';
 
-                    html += '<td class="' + cname.replace(/^\s+|\s+$/g, '') + '" data-title="' + 'r' + row + 'c' + col + '">' + calendar[row][col].date() + '</td>';
-
+                    if(classes.indexOf('off') === -1){
+                        html += '<td class="' + cname.replace(/^\s+|\s+$/g, '') + '" data-title="' + 'r' + row + 'c' + col + '">' + calendar[row][col].date() + '</td>';
+                    } else {
+                        html += '<td class="off"></td>';
+                    }
                 }
                 html += '</tr>';
             }
@@ -1236,13 +1268,19 @@
 
                 if(dates[0]){
                     this.container.find('input[name=daterangepicker_start]').val(dates[0].format(this.locale.format));
+                    this.container.find('span.daterangepicker_start').html(dates[0].format(this.locale.format));
+
                 } else {
                     this.container.find('input[name=daterangepicker_start]').val("∞");
+                    this.container.find('span.daterangepicker_start').html("∞");
                 }
                 if(dates[1]){
                     this.container.find('input[name=daterangepicker_end]').val(dates[1].format(this.locale.format));
+                    this.container.find('span.daterangepicker_end').html(dates[1].format(this.locale.format));
+
                 } else {
                     this.container.find('input[name=daterangepicker_end]').val("∞");
+                    this.container.find('span.daterangepicker_end').html("∞");
                 }
             }
             
