@@ -1405,16 +1405,20 @@
                     //skip week numbers, only look at dates
                     if ($(el).hasClass('week')) return;
 
-                    var title = $(el).attr('data-title');
-                    var row = title.substr(1, 1);
-                    var col = title.substr(3, 1);
-                    var cal = $(el).parents('.calendar');
-                    var dt = cal.hasClass('left') ? leftCalendar.calendar[row][col] : rightCalendar.calendar[row][col];
+                    if(title){
 
-                    if (dt.isAfter(startDate) && dt.isBefore(date)) {
-                        $(el).addClass('in-range');
-                    } else {
-                        $(el).removeClass('in-range');
+                        var title = $(el).attr('data-title');
+                        var row = title.substr(1, 1);
+                        var col = title.substr(3, 1);
+                        var cal = $(el).parents('.calendar');
+                        var dt = cal.hasClass('left') ? leftCalendar.calendar[row][col] : rightCalendar.calendar[row][col];
+
+                        if (dt.isAfter(startDate) && dt.isBefore(date)) {
+                            $(el).addClass('in-range');
+                        } else {
+                            $(el).removeClass('in-range');
+                        }
+
                     }
 
                 });
@@ -1443,16 +1447,17 @@
             // left calendar for startdate, right calendar for enddate
             if($(e.target).parents('.calendar').hasClass('left')) {
                 if (this.timePicker) {
-                    var hour = parseInt(this.container.find('.left .hourselect').val(), 10);
+                    var hour = parseInt(this.container.find('.time.left .hourselect').val(), 10);
                     if (!this.timePicker24Hour) {
-                        var ampm = cal.find('.ampmselect').val();
+                        var ampm = this.container.find('.time.left .ampmselect').val();
                         if (ampm === 'PM' && hour < 12)
                             hour += 12;
                         if (ampm === 'AM' && hour === 12)
                             hour = 0;
                     }
-                    var minute = parseInt(this.container.find('.left .minuteselect').val(), 10);
-                    var second = this.timePickerSeconds ? parseInt(this.container.find('.left .secondselect').val(), 10) : 0;
+                    var minute = parseInt(this.container.find('.time.left .minuteselect').val(), 10);
+                    var second = this.timePickerSeconds ? parseInt(this.container.find('.time.left .secondselect').val(), 10) : 0;
+
                     date = date.clone().hour(hour).minute(minute).second(second);
                 }
                 this.setStartDate(date.clone());
@@ -1463,16 +1468,16 @@
 
             } else {
                 if (this.timePicker) {
-                    var hour = parseInt(this.container.find('.right .hourselect').val(), 10);
+                    var hour = parseInt(this.container.find('.time.right .hourselect').val(), 10);
                     if (!this.timePicker24Hour) {
-                        var ampm = this.container.find('.right .ampmselect').val();
+                        var ampm = this.container.find('.time.right .ampmselect').val();
                         if (ampm === 'PM' && hour < 12)
                             hour += 12;
                         if (ampm === 'AM' && hour === 12)
                             hour = 0;
                     }
-                    var minute = parseInt(this.container.find('.right .minuteselect').val(), 10);
-                    var second = this.timePickerSeconds ? parseInt(this.container.find('.right .secondselect').val(), 10) : 0;
+                    var minute = parseInt(this.container.find('.time.right .minuteselect').val(), 10);
+                    var second = this.timePickerSeconds ? parseInt(this.container.find('.time.right .secondselect').val(), 10) : 0;
                     date = date.clone().hour(hour).minute(minute).second(second);
                 }
                 this.setEndDate(date.clone());
@@ -1480,9 +1485,9 @@
                     this.clickApply();
             }
 
-            if (this.singleDatePicker) {
-                this.setEndDate(this.startDate);
-                if (!this.timePicker)
+            if (this.singleDatePicker || this.chosenLabel === 'specific_date') {
+                this.setEndDate(this.startDate.clone().endOf('day'));
+                if (!this.timePicker && this.chosenLabel !== 'specific_date')
                     this.clickApply();
             }
 
