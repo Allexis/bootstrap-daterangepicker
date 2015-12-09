@@ -541,7 +541,8 @@
                 this.updateElement();
 
             if(this.initial){
-                this.showCalendar('right');    
+                this.endDate = this.startDate.clone().endOf('day');
+                this.showCalendar('right');   
             }
 
             if(this.chosenLabel === 'specific_date'){
