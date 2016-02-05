@@ -238,9 +238,14 @@
   width: 40%;
 }
 
-.daterangepicker select.hourselect, .daterangepicker select.minuteselect, .daterangepicker select.secondselect, .daterangepicker select.ampmselect {
+.daterangepicker select.hourselect, .daterangepicker select.minuteselect, .daterangepicker select.secondselect, .daterangepicker select.ampmselect{
   width: 50px;
   margin-bottom: 0;
+}
+
+.daterangepicker button.now {
+  float:right;
+  text-transform:uppercase;
 }
 
 .daterangepicker th.month {
@@ -356,8 +361,8 @@
   color:#323232;
 }
 
-.time-picker {
-  width:100%;
+.daterangepicker .time-picker {
+  width:100% !important;
 }
 
 .time-picker.times {
@@ -366,7 +371,7 @@
 
 .time-picker .time {
   float:left;
-  padding:16px 12px;
+  width:100%;
 }
 
 .applyBtn, .applyBtn:hover {
@@ -381,6 +386,22 @@
   color:#20bae4;
   font-weight:bold;
   box-shadow: none;
+}
+
+.daterangepicker.specific_date .daterangepicker_input.start_date,
+.daterangepicker.today .daterangepicker_input.start_date,
+.daterangepicker.yesterday .daterangepicker_input.start_date {
+  width:100%;
+}
+
+.daterangepicker.specific_date .daterangepicker_input.end_date,
+.daterangepicker.today .daterangepicker_input.end_date,
+.daterangepicker.yesterday .daterangepicker_input.end_date {
+  display:none;
+}
+
+.daterangepicker_start, .daterangepicker_end {
+  font-size:8px;
 }
 
 /*  Larger Screen Styling */
