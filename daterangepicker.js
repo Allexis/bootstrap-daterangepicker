@@ -145,6 +145,9 @@
             if (typeof options.locale.endDate === 'string')
               this.locale.endDate = options.locale.endDate;
 
+            if (typeof options.locale.nowLabel === 'string')
+              this.locale.nowLabel = options.locale.nowLabel;
+
         }
 
         if (typeof options.startDate === 'string')
@@ -293,7 +296,7 @@
                 '</div>' +
                 // time picker
                 '<p class="picktime"></p>' +
-                '<button class="applyBtn" disabled="disabled" type="button" style="width:100%;"></button> ' +
+                '<button class="applyBtn" type="button" style="width:100%;"></button> ' +
             '</div>';
 
         this.parentEl = (options.parentEl && $(options.parentEl).length) ? $(options.parentEl) : $(this.parentEl);
