@@ -103,60 +103,6 @@
         //data-api options will be overwritten with custom javascript options
         options = $.extend(this.element.data(), options);
 
-        //html template for the picker UI
-        if (typeof options.template !== 'string')
-            options.template = '<div class="daterangepicker dropdown-menu">' +
-                '<div class="ranges">' +
-                    '<div class="range_inputs">' +
-                    '</div>' +
-                '</div>' +
-                // input left
-                '<div class="picker">' +
-                    '<div class="daterangepicker_input start_date">' +
-                      '<div class="daterangepicker_input_container">' +
-                        '<span>' + this.locale.startDate + '</span>' +
-                        '<span class="daterangepicker_start"></span>' +
-                      '</div>' +
-                      '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
-                      '<div class="calendar-time">' +
-                        '<div></div>' +
-                        '<i class="fa fa-clock-o glyphicon glyphicon-time"></i>' +
-                      '</div>' +
-                    '</div>' +
-                    // input right
-                    '<div class="daterangepicker_input end_date">' +
-                      '<div class="daterangepicker_input_container">' +
-                        '<span>' + this.locale.endDate + '</span>' +
-                        '<span class="daterangepicker_end"></span>' +
-                      '</div>' +
-                      '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
-                      '<div class="calendar-time">' +
-                        '<div></div>' +
-                        '<i class="fa fa-clock-o glyphicon glyphicon-time"></i>' +
-                      '</div>' +
-                    '</div>' +
-                    '<div style="clear:both;"></div>' +
-                    // calendar left
-                    '<div class="calendar left">' +
-                        '<div class="calendar-table"></div>' +
-                    '</div>' +
-                    // calendar right
-                    '<div class="calendar right">' +
-                        '<div class="calendar-table"></div>' +
-                    '</div>' +
-                    '<div class="picktime time-picker times">' +
-                        '<div class="time left"></div>' +
-                        '<div class="time right"></div>' + 
-                    '</div>' +
-                '</div>' +
-                // time picker
-                '<p class="picktime"></p>' +
-                '<button class="applyBtn" disabled="disabled" type="button" style="width:100%;"></button> ' +
-            '</div>';
-
-        this.parentEl = (options.parentEl && $(options.parentEl).length) ? $(options.parentEl) : $(this.parentEl);
-        this.container = $(options.template).appendTo(this.parentEl);
-
         //
         // handle all the possible options overriding defaults
         //
@@ -298,6 +244,60 @@
                 iterator--;
             }
         }
+
+        //html template for the picker UI
+        if (typeof options.template !== 'string')
+            options.template = '<div class="daterangepicker dropdown-menu">' +
+                '<div class="ranges">' +
+                    '<div class="range_inputs">' +
+                    '</div>' +
+                '</div>' +
+                // input left
+                '<div class="picker">' +
+                    '<div class="daterangepicker_input start_date">' +
+                      '<div class="daterangepicker_input_container">' +
+                        '<span>' + this.locale.startDate + '</span>' +
+                        '<span class="daterangepicker_start"></span>' +
+                      '</div>' +
+                      '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
+                      '<div class="calendar-time">' +
+                        '<div></div>' +
+                        '<i class="fa fa-clock-o glyphicon glyphicon-time"></i>' +
+                      '</div>' +
+                    '</div>' +
+                    // input right
+                    '<div class="daterangepicker_input end_date">' +
+                      '<div class="daterangepicker_input_container">' +
+                        '<span>' + this.locale.endDate + '</span>' +
+                        '<span class="daterangepicker_end"></span>' +
+                      '</div>' +
+                      '<i class="fa fa-calendar glyphicon glyphicon-calendar"></i>' +
+                      '<div class="calendar-time">' +
+                        '<div></div>' +
+                        '<i class="fa fa-clock-o glyphicon glyphicon-time"></i>' +
+                      '</div>' +
+                    '</div>' +
+                    '<div style="clear:both;"></div>' +
+                    // calendar left
+                    '<div class="calendar left">' +
+                        '<div class="calendar-table"></div>' +
+                    '</div>' +
+                    // calendar right
+                    '<div class="calendar right">' +
+                        '<div class="calendar-table"></div>' +
+                    '</div>' +
+                    '<div class="picktime time-picker times">' +
+                        '<div class="time left"></div>' +
+                        '<div class="time right"></div>' + 
+                    '</div>' +
+                '</div>' +
+                // time picker
+                '<p class="picktime"></p>' +
+                '<button class="applyBtn" disabled="disabled" type="button" style="width:100%;"></button> ' +
+            '</div>';
+
+        this.parentEl = (options.parentEl && $(options.parentEl).length) ? $(options.parentEl) : $(this.parentEl);
+        this.container = $(options.template).appendTo(this.parentEl);
 
         var start, end, range;
 
