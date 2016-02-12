@@ -388,13 +388,11 @@
   box-shadow: none;
 }
 
-.daterangepicker.specific_date .daterangepicker_input.start_date,
 .daterangepicker.today .daterangepicker_input.start_date,
 .daterangepicker.yesterday .daterangepicker_input.start_date {
   width:100%;
 }
 
-.daterangepicker.specific_date .daterangepicker_input.end_date,
 .daterangepicker.today .daterangepicker_input.end_date,
 .daterangepicker.yesterday .daterangepicker_input.end_date {
   display:none;
