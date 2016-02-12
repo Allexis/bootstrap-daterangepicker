@@ -566,11 +566,6 @@
             if (!this.isShowing)
                 this.updateElement();
 
-            if(this.initial && this.startDate){
-                this.endDate = this.startDate.clone().endOf('day');
-                this.showCalendar('right');   
-            }
-
             if(this.chosenLabel === 'specific_date'){
                 this.endDate.day ? this.endDate.day(this.startDate.day()) : this.startDate.clone();
             } else if(this.chosenLabel === 'after_date') {
@@ -747,7 +742,7 @@
 
             if(this.chosenLabel !== this.locale.customRangeLabel) {
 
-                if(this.startDate && this.endDate) {
+                if(this.startDate && this.endDate && this.chosenLabel !== 'specific_date') {
 
                     this.container.removeClass(this.chosenLabel);
 
@@ -1391,9 +1386,10 @@
                 this.showCalendars();
                 this.initial = true;
                 this.startDate = moment();
-                this.endDate = moment();
+                this.endDate = null;
                 this.container.find('.ranges li').removeClass('active');
                 this.container.find('.ranges li:last-child').addClass('active');
+                this.updateCalendars();
             } else {
                 var dates = this.ranges[label];
                 this.startDate = dates[0] ? dates[0].clone() : null;
@@ -1566,7 +1562,7 @@
                 this.setStartDate(date.clone());
 
                 if(this.endDate && this.startDate > this.endDate){
-                    this.endDate = date.clone().endOf('day');
+                    this.endDate = null;
                 }
 
             } else {
