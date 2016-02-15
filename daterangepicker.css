@@ -154,6 +154,7 @@
   text-align: center;
   min-width: 32px;
   color:#323232;
+  padding:8px;
 }
 
 .daterangepicker .calendar-table {
