@@ -1007,7 +1007,7 @@
                             classes.push('active', 'end-date');
 
                         //highlight dates in-between the selected dates
-                        if (((this.endDate != null && calendar[row][col] < this.endDate) || !this.endDate) && calendar[row][col] > this.startDate)
+                        if (((this.endDate != null && calendar[row][col] < this.endDate) || (!this.endDate && this.chosenLabel !== this.locale.customRangeLabel)) && calendar[row][col] > this.startDate)
                             classes.push('in-range');
 
                         var cname = '', disabled = false;
@@ -1596,7 +1596,6 @@
             if (this.singleDatePicker || this.chosenLabel === 'specific_date') {
                 if(this.endDate) {
                     this.endDate.dayOfYear(this.startDate.clone().dayOfYear());
-                    console.log(this.startDate.clone());
                 } else {
                     this.setEndDate(this.startDate.clone().endOf('day'));                    
                 }
