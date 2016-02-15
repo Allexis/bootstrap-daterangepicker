@@ -567,9 +567,13 @@
                 this.updateElement();
 
             if(this.chosenLabel === 'specific_date'){
-                this.endDate.day ? this.endDate.day(this.startDate.day()) : this.startDate.clone();
+                this.endDate.day ? this.endDate.dayOfYear(this.startDate.dayOfYear()) : this.startDate.clone();
             } else if(this.chosenLabel === 'after_date') {
                 this.endDate = null;
+            }
+
+            if(this.startDate && this.endDate && this.startDate > this.endDate) {
+                this.endDate = this.startDate.clone();
             }
 
             this.updateMonthsInView();
@@ -781,7 +785,7 @@
 
                         this.chosenLabel = this.container.find('.ranges li[data-range="specific_date"]').addClass('active').data('range');
                         customRange = false;
-                    }
+                    }                  
                 }
 
                 if (customRange) {
@@ -967,51 +971,55 @@
 
                     var classes = [];
 
-                    //highlight today's date
-                    if (calendar[row][col].isSame(new Date(), "day"))
-                        classes.push('today');
+                    if(this.startDate || this.endDate) {
 
-                    //highlight weekends
-                    if (calendar[row][col].isoWeekday() > 5)
-                        classes.push('weekend');
+                        //highlight today's date
+                        if (calendar[row][col].isSame(new Date(), "day"))
+                            classes.push('today');
 
-                    //grey out the dates in other months displayed at beginning and end of this calendar
-                    if (calendar[row][col].month() != calendar[1][1].month())
-                        classes.push('off');
+                        //highlight weekends
+                        if (calendar[row][col].isoWeekday() > 5)
+                            classes.push('weekend');
 
-                    //don't allow selection of dates before the minimum date
-                    if (this.minDate && calendar[row][col].isBefore(this.minDate, 'day'))
-                        classes.push('off', 'disabled');
+                        //grey out the dates in other months displayed at beginning and end of this calendar
+                        if (calendar[row][col].month() != calendar[1][1].month())
+                            classes.push('off');
 
-                    //don't allow selection of dates after the maximum date
-                    if (maxDate && calendar[row][col].isAfter(maxDate, 'day'))
-                        classes.push('off', 'disabled');
+                        //don't allow selection of dates before the minimum date
+                        if (this.minDate && calendar[row][col].isBefore(this.minDate, 'day'))
+                            classes.push('off', 'disabled');
 
-                    //don't allow selection of date if a custom function decides it's invalid
-                    if (this.isInvalidDate(calendar[row][col]))
-                        classes.push('off', 'disabled');
+                        //don't allow selection of dates after the maximum date
+                        if (maxDate && calendar[row][col].isAfter(maxDate, 'day'))
+                            classes.push('off', 'disabled');
 
-                    //highlight the currently selected start date
-                    if (this.startDate && calendar[row][col].format('YYYY-MM-DD') == this.startDate.format('YYYY-MM-DD')){
-                        classes.push('active', 'start-date');
+                        //don't allow selection of date if a custom function decides it's invalid
+                        if (this.isInvalidDate(calendar[row][col]))
+                            classes.push('off', 'disabled');
+
+                        //highlight the currently selected start date
+                        if (this.startDate && calendar[row][col].format('YYYY-MM-DD') == this.startDate.format('YYYY-MM-DD')){
+                            classes.push('active', 'start-date');
+                        }
+
+                        //highlight the currently selected end date
+                        if (this.endDate != null && calendar[row][col].format('YYYY-MM-DD') == this.endDate.format('YYYY-MM-DD'))
+                            classes.push('active', 'end-date');
+
+                        //highlight dates in-between the selected dates
+                        if (((this.endDate != null && calendar[row][col] < this.endDate) || !this.endDate) && calendar[row][col] > this.startDate)
+                            classes.push('in-range');
+
+                        var cname = '', disabled = false;
+                        for (var i = 0; i < classes.length; i++) {
+                            cname += classes[i] + ' ';
+                            if (classes[i] == 'disabled')
+                                disabled = true;
+                        }
+                        if (!disabled)
+                            cname += 'available';
+
                     }
-
-                    //highlight the currently selected end date
-                    if (this.endDate != null && calendar[row][col].format('YYYY-MM-DD') == this.endDate.format('YYYY-MM-DD'))
-                        classes.push('active', 'end-date');
-
-                    //highlight dates in-between the selected dates
-                    if (((this.endDate != null && calendar[row][col] < this.endDate) || !this.endDate) && calendar[row][col] > this.startDate)
-                        classes.push('in-range');
-
-                    var cname = '', disabled = false;
-                    for (var i = 0; i < classes.length; i++) {
-                        cname += classes[i] + ' ';
-                        if (classes[i] == 'disabled')
-                            disabled = true;
-                    }
-                    if (!disabled)
-                        cname += 'available';
 
                     if(classes.indexOf('off') === -1){
                         html += '<td class="' + cname.replace(/^\s+|\s+$/g, '') + '" data-title="' + 'r' + row + 'c' + col + '">' + calendar[row][col].date() + '</td>';
@@ -1586,7 +1594,12 @@
             }
 
             if (this.singleDatePicker || this.chosenLabel === 'specific_date') {
-                this.setEndDate(this.startDate.clone().endOf('day'));
+                if(this.endDate) {
+                    this.endDate.dayOfYear(this.startDate.clone().dayOfYear());
+                    console.log(this.startDate.clone());
+                } else {
+                    this.setEndDate(this.startDate.clone().endOf('day'));                    
+                }
             }
 
             this.updateView();
