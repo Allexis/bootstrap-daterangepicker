@@ -567,7 +567,7 @@
                 this.updateElement();
 
             if(this.chosenLabel === 'specific_date'){
-                this.endDate.day ? this.endDate.dayOfYear(this.startDate.dayOfYear()).endOf('day') : this.startDate.clone().endOf('day');
+                this.endDate.dayOfYear ? this.setEndDate(this.endDate.clone().dayOfYear(this.startDate.dayOfYear())) : this.startDate.clone().endOf('day');
             } else if(this.chosenLabel === 'after_date') {
                 this.endDate = null;
             }
@@ -786,12 +786,14 @@
                         this.showCalendar('right');
                         customRange = false;
                     } else if(this.startDate && this.endDate && this.startDate.dayOfYear() === this.endDate.dayOfYear()) {
-                        if(this.chosenLabel !== 'specific_date')
+                        if(this.chosenLabel !== 'specific_date') {                            
                             this.showCalendar('left');
+                            this.setStartDate(this.startDate.clone().startOf('day'));
+                            this.setEndDate(this.endDate.clone().endOf('day'));
+                        }
 
                         this.chosenLabel = this.container.find('.ranges li[data-range="specific_date"]').addClass('active').data('range');
-                        this.setStartDate(this.startDate.clone().startOf('day'));
-                        this.setEndDate(this.endDate.clone().endOf('day'));
+
                         customRange = false;
                     }                  
                 }
@@ -1607,7 +1609,7 @@
                     this.clickApply();
             }
 
-            if (this.singleDatePicker || this.chosenLabel === 'specific_date') {
+            if (this.singleDatePicker) {
                 if(this.endDate) {
                     this.endDate.dayOfYear(this.startDate.clone().dayOfYear()).endOf('day');
                 } else {
