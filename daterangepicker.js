@@ -583,6 +583,7 @@
         },
 
         setEndDate: function(endDate) {
+
             if (typeof endDate === 'string')
                 this.endDate = moment(endDate, this.locale.format);
 
@@ -1059,7 +1060,7 @@
                 selected = this.startDate.clone();
                 minDate = this.minDate;
             } else if (side == 'right' && (this.endDate || this.startDate)) {
-                selected = this.endDate ? this.endDate.clone() : this.startDate.clone();
+                selected = this.endDate ? this.endDate.clone() : this.startDate.clone().endOf('day');
                 minDate = this.startDate;
             }
 
