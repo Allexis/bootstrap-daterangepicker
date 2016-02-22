@@ -751,7 +751,6 @@
             var i = 0;
 
 
-            if(this.chosenLabel !== this.locale.customRangeLabel) {
 
                 if(this.startDate && this.endDate && this.chosenLabel !== 'specific_date') {
 
@@ -778,19 +777,21 @@
                 }
 
                 if(customRange) {
-                    if(this.startDate && !this.endDate) {
+                    if(this.startDate && !this.endDate && this.chosenLabel !== this.locale.customRangeLabel) {
                         this.chosenLabel = this.container.find('.ranges li[data-range="after_date"]').addClass('active').data('range');
                         this.showCalendar('left');
                         customRange = false;
-                    } else if(!this.startDate && this.endDate) {
+                    } else if(!this.startDate && this.endDate && this.chosenLabel !== this.locale.customRangeLabel) {
                         this.chosenLabel = this.container.find('.ranges li[data-range="before_date"]').addClass('active').data('range');
                         this.showCalendar('right');
                         customRange = false;
-                    } else if(this.startDate && this.endDate && this.startDate.diff(this.endDate,'days') === 0) {
+                    } else if(this.startDate && this.endDate && this.startDate.dayOfYear() === this.endDate.dayOfYear()) {
                         if(this.chosenLabel !== 'specific_date')
                             this.showCalendar('left');
 
                         this.chosenLabel = this.container.find('.ranges li[data-range="specific_date"]').addClass('active').data('range');
+                        this.setStartDate(this.startDate.clone().startOf('day'));
+                        this.setEndDate(this.endDate.clone().endOf('day'));
                         customRange = false;
                     }                  
                 }
@@ -802,9 +803,6 @@
 
                 this.container.addClass(this.chosenLabel);
 
-            } else {
-                this.chosenLabel = this.container.find('.ranges li:last').addClass('active').html();
-            }
 
         },
 
