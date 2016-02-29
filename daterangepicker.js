@@ -273,6 +273,7 @@
                         '<i class="fa fa-clock-o glyphicon glyphicon-time"></i>' +
                       '</div>' +
                     '</div>' +
+                    '<div class="daterangepicker_space"></div>' +
                     // input right
                     '<div class="daterangepicker_input end_date">' +
                       '<div class="daterangepicker_input_container">' +
