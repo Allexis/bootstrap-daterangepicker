@@ -568,7 +568,7 @@
                 this.updateElement();
 
             if(this.chosenLabel === 'specific_date'){
-                this.endDate.dayOfYear ? this.setEndDate(this.endDate.clone().dayOfYear(this.startDate.dayOfYear())) : this.startDate.clone().endOf('day');
+                this.endDate && this.endDate.dayOfYear ? this.setEndDate(this.endDate.clone().dayOfYear(this.startDate.dayOfYear())) : this.startDate.clone().endOf('day');
             } else if(this.chosenLabel === 'after_date') {
                 this.endDate = null;
             }
