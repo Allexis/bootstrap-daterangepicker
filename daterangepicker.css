@@ -19,6 +19,10 @@
   width:278px;
 }
 
+input.date-picker[readonly] {
+  cursor: default !important;
+}
+
 .daterangepicker.opensleft:before {
   position: absolute;
   top: -7px;
