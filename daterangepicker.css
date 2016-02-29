@@ -345,10 +345,10 @@ input.date-picker[readonly] {
 }
 
 .daterangepicker .ranges li, .daterangepicker .times li {
-  font-size: 11px;
+  font-size: 12px;
   background: #ededed;
   color: #323232;
-  padding: 3px 12px;
+  padding: 3px 12px 4px 12px;
   margin-bottom: 9px;
   border-radius: 1.34px;
   cursor: pointer;
