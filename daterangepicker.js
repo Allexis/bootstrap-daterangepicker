@@ -376,6 +376,8 @@
             list += '<li>' + this.locale.customRangeLabel + '</li>';
             list += '</ul>';
             this.container.find('.ranges').html(list);
+        } else {
+            this.container.find('.ranges').hide();
         }
 
         if (typeof cb === 'function') {
