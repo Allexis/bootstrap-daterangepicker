@@ -753,7 +753,7 @@
             var customRange = true;
             var i = 0;
 
-
+            if(Object.keys(this.ranges).length > 0) {
 
                 if(this.startDate && this.endDate && this.chosenLabel !== 'specific_date') {
 
@@ -808,6 +808,7 @@
 
                 this.container.addClass(this.chosenLabel);
 
+            }
 
         },
 
