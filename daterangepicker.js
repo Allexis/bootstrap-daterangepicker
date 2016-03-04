@@ -576,7 +576,7 @@
             }
 
             if(this.startDate && this.endDate && this.startDate > this.endDate) {
-                this.setEndDate( this.startDate.clone() );
+                this.endDate = null;
             }
 
             if (this.minDate && this.startDate.isBefore(this.minDate))
@@ -1018,7 +1018,7 @@
                             classes.push('active', 'end-date');
 
                         //highlight dates in-between the selected dates
-                        if (((this.endDate != null && calendar[row][col] < this.endDate) || (!this.endDate && this.chosenLabel !== this.locale.customRangeLabel)) && calendar[row][col] > this.startDate)
+                        if (((this.endDate != null && calendar[row][col] < this.endDate) || (!this.endDate && this.chosenLabel !== this.locale.customRangeLabel && Object.keys(this.ranges).length > 0 )) && calendar[row][col] > this.startDate) 
                             classes.push('in-range');
 
                         var cname = '', disabled = false;
