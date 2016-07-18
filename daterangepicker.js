@@ -522,7 +522,7 @@
                 this.container.find('.right').hide();
                 this.startDateSelected = true;
 
-                if(this.endDate && this.endDate < moment()) {
+                if(this.endDate && (this.endDate.isBefore(moment()) || this.endDate.isSame(moment(), 'minute')) )  {
                     $('.now').attr('disabled','disabled');
                 } else {
                     $('.now').removeAttr('disabled');
@@ -537,7 +537,7 @@
                 this.container.find('.right').show();   
                 this.startDateSelected = false;
 
-                if(this.startDate && this.startDate > moment()) {
+                if(this.startDate && (this.startDate.isAfter(moment()) || this.startDate.isSame(moment(), 'minute')) ) {
                     $('.now').attr('disabled','disabled');
                 } else {
                     $('.now').removeAttr('disabled');
@@ -575,9 +575,12 @@
                 this.endDate = null;
             }
 
-            if(this.startDate && this.endDate && this.startDate > this.endDate) {
+            if(this.startDate && this.endDate && this.startDate.isAfter(this.endDate)) {
                 this.endDate = null;
             }
+
+            if(this.startDate && this.endDate && this.startDate.isSame(this.endDate, 'minute'))
+                this.endDate.add(1, 'minute');
 
             if (this.minDate && this.startDate.isBefore(this.minDate))
                 this.startDate = this.minDate.clone();
@@ -607,6 +610,9 @@
 
             if (this.dateLimit && this.startDate && this.endDate && this.startDate.clone().add(this.dateLimit).isBefore(this.endDate))
                 this.endDate = this.startDate.clone().add(this.dateLimit);
+
+            if(this.startDate && this.endDate && this.startDate.isSame(this.endDate, 'minute'))
+                this.endDate.add(1, 'minute');
 
             if (!this.isShowing)
                 this.updateElement();
@@ -1107,9 +1113,9 @@
                     var time = selected.clone().minute(i);
 
                     var disabled = false;
-                    if (minDate && time.second(59).isBefore(minDate))
+                    if (minDate && time.second(0).isBefore(minDate))
                         disabled = true;
-                    if (maxDate && time.second(0).isAfter(maxDate))
+                    if (maxDate && time.second(59).isAfter(maxDate))
                         disabled = true;
 
                     if (selected.minute() == i && !disabled) {
