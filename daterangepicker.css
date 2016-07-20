@@ -253,6 +253,10 @@ input.date-picker[readonly] {
   text-transform:uppercase;
 }
 
+.daterangepicker button.now[disabled] {
+  opacity: 0.5;
+}
+
 .daterangepicker th.month {
   width: auto;
 }
