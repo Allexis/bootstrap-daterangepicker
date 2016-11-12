@@ -695,14 +695,10 @@
                 this.renderCalendar('right');
             }
 
-            if (this.startDate && this.endDate) {
-
-                if (!this.linkedCalendars && (this.endDate.month() != this.startDate.month() || this.endDate.year() != this.startDate.year())) {
+            if (this.startDate && this.endDate && (this.endDate.month() != this.startDate.month() || this.endDate.year() != this.startDate.year())) {
+                if (!this.linkedCalendars) {
                     this.rightCalendar.month = this.endDate.clone().date(2);
-                } else {
-                    this.rightCalendar.month = this.startDate.clone().date(2);
                 }
-                
             } 
 
         },
