@@ -385,8 +385,12 @@
         }
 
         if (!this.timePicker) {
-            this.startDate = this.startDate.startOf('day');
-            this.endDate = this.endDate.endOf('day');
+            if(this.startDate) {
+                this.startDate = this.startDate.startOf('day');
+            }
+            if(this.endDate) {
+                this.endDate = this.endDate.endOf('day');
+            }
             this.container.find('.calendar-time').hide();
         }
 
