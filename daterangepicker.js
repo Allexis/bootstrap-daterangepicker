@@ -87,6 +87,7 @@
             endDate: 'End date',
             pickTime: 'Pick time:',
             nowLabel: 'Now',
+            resetLabel: 'Reset'
         };
 
         this.callback = function() { };
@@ -302,7 +303,7 @@
                 '</div>' +
                 // time picker
                 '<p class="picktime"></p>' +
-                '<button class="applyBtn" type="button" style="width:100%;"></button> ' +
+                '<button class="applyBtn" type="button" style="width:100%;"></button>' +
             '</div>';
 
         this.parentEl = (options.parentEl && $(options.parentEl).length) ? $(options.parentEl) : $(this.parentEl);
@@ -421,20 +422,28 @@
 
         this.container.addClass('opens' + this.opens);
 
+        // Add reset button if no ranges are available
+        if(!options.ranges || Object.keys(options.ranges).length === 0) {
+            this.container.find('.applyBtn').css('width', '50%').css('float', 'left');
+            this.container.find('.applyBtn').after('<button class="resetBtn" type="button" style="width:50%; float:left;"></button>');
+        }
+
         //apply CSS classes and labels to buttons
-        this.container.find('.applyBtn, .cancelBtn').addClass(this.buttonClasses);
+        this.container.find('.applyBtn, .cancelBtn, .resetBtn').addClass(this.buttonClasses);
         if (this.applyClass.length)
             this.container.find('.applyBtn').addClass(this.applyClass);
         if (this.cancelClass.length)
             this.container.find('.cancelBtn').addClass(this.cancelClass);
         this.container.find('.applyBtn').html(this.locale.applyLabel);
         this.container.find('.cancelBtn').html(this.locale.cancelLabel);
+        this.container.find('.resetBtn').html(this.locale.resetLabel);
 
         //
         // event listeners
         //
         this.container
             .on('click.daterangepicker', 'button.applyBtn', $.proxy(this.clickApply, this))
+            .on('click.daterangepicker', 'button.resetBtn', $.proxy(this.clickReset, this))
 
         this.container.find('.calendar')
             .on('click.daterangepicker', '.prev', $.proxy(this.clickPrev, this))
@@ -552,6 +561,12 @@
 
         setStartDate: function(startDate) {
 
+            if(!moment(startDate).isValid()) {
+                this.startDate = null;
+                this.updateMonthsInView();
+                return;
+            }
+
             if (typeof startDate === 'string')
                 this.startDate = moment(startDate, this.locale.format);
 
@@ -593,6 +608,12 @@
         },
 
         setEndDate: function(endDate) {
+
+            if(!moment(endDate).isValid()) {
+                this.endDate = null;
+                this.updateMonthsInView();
+                return;
+            }
 
             if (typeof endDate === 'string')
                 this.endDate = moment(endDate, this.locale.format);
@@ -1608,7 +1629,9 @@
                     var second = this.timePickerSeconds ? parseInt(this.container.find('.time.right .secondselect').val(), 10) : 0;
                     date = date.clone().hour(hour).minute(minute).second(second);
                 }
+
                 this.setEndDate(date.clone());
+
                 if (this.autoApply)
                     this.clickApply();
             }
@@ -1629,6 +1652,12 @@
         clickApply: function(e) {
             this.hide();
             this.element.trigger('apply.daterangepicker', this);
+        },
+
+        clickReset: function() {
+            this.setStartDate(moment());
+            this.endDate = null;
+            this.updateView();
         },
 
         clickCancel: function(e) {

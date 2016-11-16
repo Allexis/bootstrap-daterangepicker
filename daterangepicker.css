@@ -384,7 +384,7 @@ input.date-picker[readonly] {
   width:100%;
 }
 
-.applyBtn, .applyBtn:hover {
+.applyBtn, .applyBtn:hover, .resetBtn, .resetBtn:hover {
   display:block;
   width:100%;
   background:none;
