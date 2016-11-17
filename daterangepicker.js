@@ -1001,7 +1001,8 @@
 
                 for (var col = 0; col < 7; col++) {
 
-                    var classes = [];
+                    var classes = [],
+                        cname = '';
 
                     if(this.startDate || this.endDate) {
 
@@ -1042,7 +1043,7 @@
                         if (((this.endDate != null && calendar[row][col] < this.endDate) || (!this.endDate && this.chosenLabel !== this.locale.customRangeLabel && Object.keys(this.ranges).length > 0 )) && calendar[row][col] > this.startDate) 
                             classes.push('in-range');
 
-                        var cname = '', disabled = false;
+                        var disabled = false;
                         for (var i = 0; i < classes.length; i++) {
                             cname += classes[i] + ' ';
                             if (classes[i] == 'disabled')
@@ -1595,7 +1596,7 @@
             // left calendar for startdate, right calendar for enddate
             if($(e.target).parents('.calendar').hasClass('left')) {
                 if (this.timePicker) {
-                    var hour = parseInt(this.container.find('.time.left .hourselect').val(), 10);
+                    var hour = parseInt(this.container.find('.time.left .hourselect').val(), 10) || 0;
                     if (!this.timePicker24Hour) {
                         var ampm = this.container.find('.time.left .ampmselect').val();
                         if (ampm === 'PM' && hour < 12)
@@ -1603,8 +1604,8 @@
                         if (ampm === 'AM' && hour === 12)
                             hour = 0;
                     }
-                    var minute = parseInt(this.container.find('.time.left .minuteselect').val(), 10);
-                    var second = this.timePickerSeconds ? parseInt(this.container.find('.time.left .secondselect').val(), 10) : 0;
+                    var minute = parseInt(this.container.find('.time.left .minuteselect').val(), 10) || 0;
+                    var second = this.timePickerSeconds ? parseInt(this.container.find('.time.left .secondselect').val(), 10) : 0 || 0;
 
                     date = date.clone().hour(hour).minute(minute).second(second);
                 }
@@ -1617,7 +1618,7 @@
             } else {
 
                 if (this.timePicker) {
-                    var hour = parseInt(this.container.find('.time.right .hourselect').val(), 10);
+                    var hour = parseInt(this.container.find('.time.right .hourselect').val(), 10) || 0;
                     if (!this.timePicker24Hour) {
                         var ampm = this.container.find('.time.right .ampmselect').val();
                         if (ampm === 'PM' && hour < 12)
@@ -1625,8 +1626,8 @@
                         if (ampm === 'AM' && hour === 12)
                             hour = 0;
                     }
-                    var minute = parseInt(this.container.find('.time.right .minuteselect').val(), 10);
-                    var second = this.timePickerSeconds ? parseInt(this.container.find('.time.right .secondselect').val(), 10) : 0;
+                    var minute = parseInt(this.container.find('.time.right .minuteselect').val(), 10) || 0;
+                    var second = this.timePickerSeconds ? parseInt(this.container.find('.time.right .secondselect').val(), 10) : 0 || 0;
                     date = date.clone().hour(hour).minute(minute).second(second);
                 }
 
