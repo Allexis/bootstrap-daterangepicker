@@ -711,16 +711,38 @@
                 this.renderCalendar('left');
             }
 
+<<<<<<< 662da707ad39e852ebb6fa42f18276173c8f900e
             if(this.endDate && this.rightCalendar.month.format('YYYY-MM') != this.endDate.format('YYYY-MM')) {
                 this.rightCalendar.month = this.endDate.clone().date(2);
                 this.renderCalendar('right');
             }
+=======
+                //if both dates are visible already, do nothing
+                if (!this.singleDatePicker && this.leftCalendar.month && this.rightCalendar.month &&
+                    (this.startDate.format('YYYY-MM') == this.leftCalendar.month.format('YYYY-MM') || this.startDate.format('YYYY-MM') == this.rightCalendar.month.format('YYYY-MM'))
+                    &&
+                    (this.endDate.format('YYYY-MM') == this.leftCalendar.month.format('YYYY-MM') || this.endDate.format('YYYY-MM') == this.rightCalendar.month.format('YYYY-MM'))
+                    ) {
+                    return;
+                }
+>>>>>>> SVCPC-14615
 
             if (this.startDate && this.endDate && (this.endDate.month() != this.startDate.month() || this.endDate.year() != this.startDate.year())) {
                 if (!this.linkedCalendars) {
                     this.rightCalendar.month = this.endDate.clone().date(2);
                 }
+<<<<<<< 662da707ad39e852ebb6fa42f18276173c8f900e
+            } 
+=======
+
+            } else {
+
+                if (this.startDate && this.leftCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM') && this.rightCalendar.month.format('YYYY-MM') != this.startDate.format('YYYY-MM')) {
+                    this.leftCalendar.month = this.startDate.clone().date(2);
+                    this.rightCalendar.month = this.startDate.clone().date(2).add(1, 'month');
+                }
             }
+>>>>>>> SVCPC-14615
 
         },
 
@@ -795,10 +817,7 @@
                                 break;
                             }
                         }
-
-                        this.chosenDateRangeTypeId = this.container.find('.ranges li:eq(' + i + ')').data('dateRangeTypeId');
-
-                          i++;
+                        i++;
                     }
 
                 }
@@ -813,7 +832,7 @@
                         this.showCalendar('right');
                         customRange = false;
                     } else if(this.startDate && this.endDate && this.startDate.dayOfYear() === this.endDate.dayOfYear()) {
-                        if(this.chosenLabel !== 'specific_date') {
+                        if(this.chosenLabel !== 'specific_date') {                            
                             this.showCalendar('left');
                             this.setStartDate(this.startDate.clone().startOf('day'));
                             this.setEndDate(this.endDate.clone().endOf('day'));
@@ -1043,7 +1062,7 @@
                             classes.push('active', 'end-date');
 
                         //highlight dates in-between the selected dates
-                        if (((this.endDate != null && calendar[row][col] < this.endDate) || (!this.endDate && this.chosenLabel !== this.locale.customRangeLabel && Object.keys(this.ranges).length > 0 )) && calendar[row][col] > this.startDate)
+                        if (((this.endDate != null && calendar[row][col] < this.endDate) || (!this.endDate && this.chosenLabel !== this.locale.customRangeLabel && Object.keys(this.ranges).length > 0 )) && calendar[row][col] > this.startDate) 
                             classes.push('in-range');
 
                         var disabled = false;
