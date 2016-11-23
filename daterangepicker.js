@@ -884,9 +884,6 @@
                 break;
               }
             }
-
-            this.chosenDateRangeTypeId = this.container.find('.ranges li:eq(' + i + ')').data('dateRangeTypeId');
-
             i++;
           }
 
@@ -1570,10 +1567,12 @@
     },
 
     clickRange: function (e) {
-      var label = e.target.dataset.range || e.target.innerHTML;
+      var label = e.target.dataset.range || e.target.innerHTML,
+          dateRangeTypeId = e.target.dataset.dateRangeTypeId;
 
       this.container.removeClass(this.chosenLabel);
       this.chosenLabel = label;
+      this.chosenDateRangeTypeId = dateRangeTypeId;
       this.container.addClass(label);
 
       if (label == this.locale.customRangeLabel) {
