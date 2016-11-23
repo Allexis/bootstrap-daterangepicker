@@ -372,7 +372,7 @@
 
             var list = '<ul>';
             for (range in this.ranges) {
-                list += '<li data-range="'+range+'">' + this.ranges[range].displayName + '</li>';
+                list += '<li data-range="'+range+'" data-date-range-type-id="'+options.ranges[range].dateRangeTypeId+'">' + this.ranges[range].displayName + '</li>';
             }
             list += '<li>' + this.locale.customRangeLabel + '</li>';
             list += '</ul>';
