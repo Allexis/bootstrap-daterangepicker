@@ -399,12 +399,14 @@ input.date-picker[readonly] {
 }
 
 .daterangepicker.today .daterangepicker_input.start_date,
-.daterangepicker.yesterday .daterangepicker_input.start_date {
+.daterangepicker.yesterday .daterangepicker_input.start_date,
+.daterangepicker.single .daterangepicker_input.start_date {
   width:100%;
 }
 
 .daterangepicker.today .daterangepicker_input.end_date,
-.daterangepicker.yesterday .daterangepicker_input.end_date {
+.daterangepicker.yesterday .daterangepicker_input.end_date,
+.daterangepicker.single .daterangepicker_input.end_date {
   display:none;
 }
 

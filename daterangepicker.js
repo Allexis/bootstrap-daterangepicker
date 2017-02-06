@@ -63,6 +63,7 @@
     this.linkedCalendars = true;
     this.autoUpdateInput = true;
     this.ranges = {};
+    this.singleDateAndTime = false;
 
     if (!this.startDate && !this.endDate) {
       this.startDate = moment().startOf('day');
@@ -97,7 +98,8 @@
       endDate:          'End date',
       pickTime:         'Pick time:',
       nowLabel:         'Now',
-      resetLabel:       'Reset'
+      resetLabel:       'Reset',
+      date:             'Date',
     };
 
     this.callback = function () {
@@ -264,6 +266,12 @@
       if (this.singleDatePicker) {
         this.endDate = this.startDate.clone();
       }
+    }
+
+    if (typeof options.singleDateAndTime === 'boolean') {
+        this.singleDateAndTime = options.singleDateAndTime;
+        if (this.singleDateAndTime)
+            this.endDate = this.startDate.clone();
     }
 
     if (typeof options.timePicker === 'boolean') {
@@ -466,7 +474,7 @@
       this.container.find('.applyBtn, .cancelBtn').addClass('hide');
     }
 
-    if (this.singleDatePicker) {
+    if (this.singleDatePicker || this.singleDateAndTime) {
       this.container.addClass('single');
       this.container.find('.calendar.left').addClass('single');
       this.container.find('.calendar.left').show();
@@ -477,7 +485,7 @@
       }
     }
 
-    if (typeof options.ranges === 'undefined' && !this.singleDatePicker) {
+    if (typeof options.ranges === 'undefined' && !this.singleDatePicker && !this.singleDateAndTime) {
       this.container.addClass('show-calendar');
     }
 
@@ -565,7 +573,7 @@
     // if attached to a text input, set the initial value
     //
 
-    if (this.element.is('input') && !this.singleDatePicker && this.autoUpdateInput) {
+    if (this.element.is('input') && !this.singleDatePicker && !this.singleDateAndTime && this.autoUpdateInput) {
       this.element.val(this.startDate.format(this.locale.format) + this.locale.separator + this.endDate.format(this.locale.format));
       this.element.trigger('change');
     } else if (this.element.is('input') && this.autoUpdateInput) {
@@ -676,6 +684,10 @@
         this.startDate = this.minDate.clone();
       }
 
+      if(this.singleDateAndTime) {
+        this.endDate = this.startDate.clone();
+      }
+
       this.updateMonthsInView();
     },
 
@@ -731,6 +743,10 @@
         this.endDate = this.maxDate.clone();
       }
 
+      if(this.singleDateAndTime) {
+        this.endDate = this.startDate.clone();
+      }
+
       this.updateMonthsInView();
     },
 
@@ -763,14 +779,22 @@
 
     updateRangeSelection: function () {
 
-      if ([
+      var label;
+
+      if (this.singleDateAndTime || [
           'today',
           'yesterday'
         ].indexOf(this.chosenLabel) !== -1) {
 
-        $('.daterangepicker_start_label').html(this.container.find('.ranges *[data-range="' + this.chosenLabel + '"]').html());
+        if(this.singleDateAndTime) {
+          label = this.locale.date;
+        } else {
+          label = this.container.find('.ranges *[data-range="' + this.chosenLabel + '"]').html();
+        }
+
         this.showCalendar('left');
         this.singleDatePicker = true;
+        $('.daterangepicker_start_label').html(label);
 
       } else {
 
@@ -863,7 +887,7 @@
       var customRange = true;
       var i = 0;
 
-      if (Object.keys(this.ranges).length > 0) {
+      if (!this.singleDateAndTime && Object.keys(this.ranges).length > 0) {
 
         if (this.startDate && this.endDate && this.chosenLabel !== 'specific_date') {
 
@@ -1366,7 +1390,7 @@
         this.container.find('span.daterangepicker_end').html('∞');
       }
 
-      if (this.singleDatePicker || (this.endDate && this.startDate && (this.startDate.isBefore(this.endDate) || this.startDate.isSame(this.endDate)))) {
+      if (this.singleDateAndTime || this.singleDatePicker || (this.endDate && this.startDate && (this.startDate.isBefore(this.endDate) || this.startDate.isSame(this.endDate)))) {
         this.container.find('button.applyBtn').removeAttr('disabled');
       } else {
         //this.container.find('button.applyBtn').attr('disabled', 'disabled');
@@ -1801,7 +1825,7 @@
         }
       }
 
-      if (this.singleDatePicker) {
+      if (this.singleDatePicker || this.singleDateAndTime) {
         if (this.endDate) {
           this.endDate.dayOfYear(this.startDate.clone().dayOfYear()).endOf('day');
         } else {
@@ -1986,7 +2010,7 @@
         end = moment(dateString[1], this.locale.format);
       }
 
-      if (this.singleDatePicker || start === null || end === null) {
+      if (this.singleDatePicker || this.singleDateAndTime || start === null || end === null) {
         start = moment(this.element.val(), this.locale.format);
         end = start;
       }
@@ -2008,7 +2032,7 @@
     },
 
     updateElement: function () {
-      if (this.element.is('input') && !this.singleDatePicker && this.autoUpdateInput) {
+      if (this.element.is('input') && !this.singleDatePicker && !this.singleDateAndTime && this.autoUpdateInput) {
         this.element.val(this.startDate.format(this.locale.format) + this.locale.separator + this.endDate.format(this.locale.format));
         this.element.trigger('change');
       } else if (this.element.is('input') && this.autoUpdateInput) {
