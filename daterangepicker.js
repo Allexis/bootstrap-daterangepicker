@@ -1448,7 +1448,7 @@
           left:  this.element.offset().left - parentOffset.left,
           right: 'auto'
         });
-        if (this.container.offset().left + this.container.outerWidth() > $(window).width()) {
+        if (Math.round(this.container.offset().left) + Math.round(this.container.outerWidth()) > $(window).width()) {
           this.container.css({
             left:  'auto',
             right: 0
