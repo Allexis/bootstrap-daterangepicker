@@ -720,7 +720,7 @@
       }
 
       if (this.maxDate && this.endDate && this.endDate.isAfter(this.maxDate)) {
-        this.endDate = this.maxDate;
+        this.endDate = this.maxDate.clone();
       }
 
       if (this.dateLimit && this.startDate && this.endDate && this.startDate.clone().add(this.dateLimit).isBefore(this.endDate)) {
